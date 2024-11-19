@@ -2,12 +2,17 @@ CC=gcc
 CFLAGS=-Wall -std=c99 -ggdb
 
 TEST_FILE=test.c
+OUT=out/
 
 .PHONY: all clean
 
-all: test
-clean:
-	rm test
+all: $(OUT)test
 
-test: $(TEST_FILE)
-	$(CC) $(CFLAGS) $^ -o $@
+clean: $(OUT)
+	rm -rf $(OUT)
+
+$(OUT)test: $(TEST_FILE) $(OUT)
+	$(CC) $(TEST_FILE) $(CFLAGS) -o $@
+
+$(OUT):
+	mkdir $@
