@@ -3,14 +3,11 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-
 enum {
         ESPI_OPT_NO_ERR = 0,
-        ESPI_OPT_ERR_INVALID, /* sentinel initializer */
-        /* usage errors */
-        ESPI_OPT_ERR_UNKNOWN_OPT,
+        ESPI_OPT_ERR_INVALID_OPT,
         ESPI_OPT_ERR_EXPECTED_SUBOPT,
-        ESPI_OPT_ERR_UNKNOWN_SHORT_OPT,
+        ESPI_OPT_ERR_INVALID_SHORT_OPT,
 
 
         ESPI_OPT_ERR_COUNT,
@@ -32,7 +29,7 @@ struct args {
 
 /* definition for option value */
 struct espi_opt {
-        int32_t id;
+        uint32_t id;
         /* short option value (E.g.: '-o') */
         int short_opt;
         /* long option value (E.g.: '--output' */
@@ -60,7 +57,7 @@ struct espi_opt_result {
 /* sentinel initializer for 'struct espi_opt_result' */
 #define INIT_ESPI_OPT_RESULT_INVALID {  \
         .id = -1,                       \
-        .err = ESPI_OPT_ERR_INVALID,    \
+        .err = ESPI_OPT_ERR_INVALID_OPT,\
         .opt_arg = NULL,                \
         .last_index = -1,               \
         .opt_ind = -1                   \
@@ -83,10 +80,9 @@ const char *espi_getopt_error(int c);
 
 const char *espi_getopt_errors[] = {
         ENUM_TO_STR(ESPI_OPT_NO_ERR),
-        ENUM_TO_STR(ESPI_OPT_ERR_INVALID),
-        ENUM_TO_STR(ESPI_OPT_ERR_UNKNOWN_OPT),
+        ENUM_TO_STR(ESPI_OPT_ERR_INVALID_OPT),
         ENUM_TO_STR(ESPI_OPT_ERR_EXPECTED_SUBOPT),
-        ENUM_TO_STR(ESPI_OPT_ERR_UNKNOWN_SHORT_OPT),
+        ENUM_TO_STR(ESPI_OPT_ERR_INVALID_SHORT_OPT),
 
         ENUM_TO_STR(ESPI_OPT_ERR_UNKNOWN),
 };
@@ -138,17 +134,10 @@ struct espi_opt_result espi_getopt(const struct espi_opt opt_arr[],
 
         /* is long argument? (double dash) */
         if (arg[1] == '-') {
-                res.err = ESPI_OPT_ERR_UNKNOWN_OPT;
                 opt_entry = load_long_opt(arg, opt_arr, opt_count);
         } else {
-                res.err = ESPI_OPT_ERR_UNKNOWN_SHORT_OPT;
                 opt_entry = load_short_opt(arg, opt_arr, opt_count);
         }
-
-        if (opt_entry.id != -1)
-                res.err = ESPI_OPT_NO_ERR;
-
-        res.id = opt_entry.id;
 
         if (opt_entry.has_arg) {
                 if (args.c >= *counter + 1) {

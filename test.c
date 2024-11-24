@@ -46,9 +46,7 @@ void parse_args(struct args args)
         for (int i = 0; i < args.c; ) {
                 struct espi_opt_result res = espi_getopt(opts, size, &i, args);
                 if (res.err != 0) {
-                        const char *err_str = espi_getopt_error(res.err);
-                        fprintf(stderr, "'espi_getopt' failed: 0x%08X => %s\n",
-                                        res.err, err_str);
+                        espi_getopt_error(res.err);
                         return;
                 }
 
