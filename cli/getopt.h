@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "args.h"
 
 enum {
         ESPI_OPT_NO_ERR = 0,
@@ -15,11 +16,6 @@ enum {
 
         ESPI_OPT_ERR_COUNT,
 #define ESPI_OPT_ERR_UNKNOWN ESPI_OPT_ERR_COUNT
-};
-
-struct args {
-        int c;
-        char **v;
 };
 
 #define ESPI_OPT_USAGE_FMT(opt) "-%c, --%s:\t%s\n",     \
