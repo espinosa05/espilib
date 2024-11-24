@@ -57,6 +57,7 @@ struct espi_opt_result {
 /* sentinel initializer for 'struct espi_opt_result' */
 #define INIT_ESPI_OPT_RESULT_INVALID {  \
         .id = -1,                       \
+        .err = ESPI_OPT_ERR_INVALID_OPT,\
         .opt_arg = NULL,                \
         .last_index = -1,               \
         .opt_ind = -1                   \
@@ -138,8 +139,6 @@ struct espi_opt_result espi_getopt(const struct espi_opt opt_arr[],
                 opt_entry = load_short_opt(arg, opt_arr, opt_count);
         }
 
-        res.id = opt_entry.id;
-
         if (opt_entry.has_arg) {
                 if (args.c >= *counter + 1) {
                         res.opt_arg = args.v[*counter];
@@ -148,6 +147,7 @@ struct espi_opt_result espi_getopt(const struct espi_opt opt_arr[],
                         res.err = ESPI_OPT_ERR_EXPECTED_SUBOPT;
                 }
         }
+
         return res;
 }
 
@@ -165,13 +165,15 @@ enum arg_offsets {
         LONG_ARG_OFFSET = 2,
 };
 
+#define NULL_ENTRY 1
+
 static struct espi_opt load_long_opt(const char *arg, const struct espi_opt opts[], size_t opt_count)
 {
         struct espi_opt ret = INIT_ESPI_OPT_INVALID;
 
         arg += LONG_ARG_OFFSET;
 
-        for (int i = 0; i < opt_count; ++i) {
+        for (int i = 0; i < opt_count - NULL_ENTRY; ++i) {
                 if (0 == strcmp(opts[i].long_opt, arg)) {
                         ret = opts[i];
                         break;
@@ -189,7 +191,7 @@ static struct espi_opt load_short_opt(const char *arg, const struct espi_opt opt
         arg += SHORT_ARG_OFFSET;
         short_arg = arg[0];
 
-        for (int i = 0; i < opt_count; ++i) {
+        for (int i = 0; i < opt_count - NULL_ENTRY; ++i) {
                 if (short_arg == opts[i].short_opt) {
                         ret = opts[i];
                         break;
