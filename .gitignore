@@ -1,3 +1,4 @@
-test
 out/
 out/*
+tests/*/out/
+tests/*/out/*
