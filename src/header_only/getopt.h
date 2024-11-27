@@ -2,7 +2,7 @@
 #define UTILS_ESPI_GETOPT_H
 
 #include <stdint.h>
-#include <stdbool.h>
+#include <stddef.h>
 
 enum {
         ESPI_OPT_NO_ERR = 0,
@@ -91,8 +91,7 @@ const char *espi_getopt_errors[] = {
         ENUM_TO_STR(ESPI_OPT_ERR_UNKNOWN),
 };
 
-/* LIBRARY IMPLEMENTATION */
-#ifdef ESPI_GETOPT_IMPL
+#ifdef ESPI_GETOPT_LIB_IMPL
 
 #include <stdio.h>
 #include <string.h>
@@ -219,5 +218,5 @@ static bool is_last_espi_opt(const struct espi_opt opt)
                         && opt.desc == NULL);
 }
 
-#endif /* ESPI_GETOPT_IMPL */
+#endif ESPI_GETOPT_LIB_IMPL
 #endif /* UTILS_ESPI_GETOPT_H */
